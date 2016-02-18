@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="sangam.project.qrate.First_page">
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I am a user"
+        android:id="@+id/button"
+        android:layout_margin="50dp"
+        android:padding="40dp"
+        android:textSize="25sp"
+        android:onClick="public_go"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I am an Admin"
+        android:id="@+id/button2"
+        android:layout_margin="50dp"
+        android:textSize="25sp"
+        android:padding="40dp"
+        android:onClick="admin_check"
+        android:nestedScrollingEnabled="false"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>
