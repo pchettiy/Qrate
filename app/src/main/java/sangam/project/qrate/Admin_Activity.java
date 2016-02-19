@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -29,90 +31,41 @@ public class Admin_Activity extends AppCompatActivity {
 
     ArrayList<String> tops;
     Spinner spinner;
-    String email;
+    String topic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        Intent in=getIntent();
         setContentView(R.layout.activity_admin_);
-        spinner= (Spinner) findViewById(R.id.spinner);
-        Intent i=getIntent();
-        if(i!=null){
-            email=i.getStringExtra("track");}
-        new AsyncGetTopics().execute(email);
-        ArrayAdapter<String> dataAdapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item,tops);
-       // spinner.setAdapter(dataAdapter);
+        spinner= (Spinner) findViewById(R.id.spinner2);
+        if(in!=null){
+            tops=in.getStringArrayListExtra("list");
+        }
+        ArrayList<String> topics=new ArrayList<>();
+        for(int i=1;i<tops.size();i++)
+            topics.add(tops.get(i));
+        ArrayAdapter<String> dataAdapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item,topics);
+         spinner.setAdapter(dataAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                topic=parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+    public void check(View view){
+        Intent intent=new Intent(getApplicationContext(),Admin_check_topics.class);
+        intent.putExtra("topic",topic);
+        startActivity(intent);
     }
 
-    public class AsyncGetTopics extends AsyncTask<String,Void,ArrayList>{
 
-
-        @Override
-        protected ArrayList doInBackground(String... params) {
-            ArrayList<String> topic_list=new ArrayList<>();
-            String downloadurl="https://spider.nitt.edu/~praba1110/qrate/admintopics.php";
-            //String downloadurl="http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=44db6a862fba0b067b1930da0d769e98";
-            try{
-
-                URL url=new URL(downloadurl);
-                try{
-                    HttpURLConnection urlConnection= (HttpURLConnection) url.openConnection();
-                    String postParameters="email="+params[0];
-                    urlConnection.setRequestMethod("POST");
-                    urlConnection.setRequestProperty("Content-Type",
-                            "application/x-www-form-urlencoded");
-                    urlConnection.setFixedLengthStreamingMode(
-                            postParameters.getBytes().length);
-                    PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
-                    out.print(postParameters);
-                    out.close();
-                    InputStream inputStream=urlConnection.getInputStream();
-                    BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
-                    String line="";
-                    String result="";
-                    while((line=bufferedReader.readLine())!=null){
-                        result+=line;
-                    }
-                    Log.d("DATA",result);
-                    inputStream.close();
-                    JSONObject details=new JSONObject(result);
-                    //for(int i=0;i<testdetails.length();i++){
-                    /*
-                        JSONObject stuff=testdetails.getJSONObject("coord");
-                        String detail=stuff.getString("lon");
-                        test.add(detail);
-                        */
-                    JSONArray topics=details.getJSONArray("topics");
-                    for(int i=0;i<topics.length();i++){
-                        Log.d("topic",topics.get(i).toString());
-                        topic_list.add(topics.get(i).toString());
-                    }
-
-                    //}
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            return topic_list;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList arrayList) {
-            super.onPostExecute(arrayList);
-            if(arrayList==null){
-                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                tops=arrayList;
-            }
-            //listView.setAdapter(new Adapter_Course(getContext(),arrayList));
-            //pd.dismiss();
-
-            //spinner.setAdapter(dataAdapter);
-        }
-    }
 }

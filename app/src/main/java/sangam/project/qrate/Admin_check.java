@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,8 +23,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 public class Admin_check extends AppCompatActivity {
+
 
     EditText email;
     @Override
@@ -37,16 +40,16 @@ public class Admin_check extends AppCompatActivity {
         new AsyncAdminCheck().execute(mail);
 
     }
-    public class AsyncAdminCheck extends AsyncTask<String,Void,String> {
+    public class AsyncAdminCheck extends AsyncTask<String,Void,ArrayList> {
 
 
 
 
         @Override
-        protected String doInBackground(String... params ) {
+        protected ArrayList doInBackground(String... params ) {
 
             String result ="";
-            String adminstatus=null;
+            ArrayList adminstatus=new ArrayList();
             String downloadurl="https://spider.nitt.edu/~praba1110/qrate/admintopics.php";
             //String downloadurl="http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=44db6a862fba0b067b1930da0d769e98";
             try{
@@ -76,8 +79,11 @@ public class Admin_check extends AppCompatActivity {
                     inputStream.close();
                     JSONObject details=new JSONObject(result);
                     Log.d("JSONOBJECT",details.toString());
-                    adminstatus=details.getString("status");
-                    Log.d("status",adminstatus);
+                    adminstatus.add(details.getString("status"));
+
+                    JSONArray array=details.getJSONArray("topics");
+                    for(int i=0;i<array.length();i++)
+                        adminstatus.add(array.get(i));
 
 
                 } catch (IOException e) {
@@ -97,12 +103,12 @@ public class Admin_check extends AppCompatActivity {
 
 
         @Override
-        protected void onPostExecute(String string) {
+        protected void onPostExecute(ArrayList string) {
             super.onPostExecute(string);
             if(string==null){
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
             }
-            else if(string.contains("0")) {
+            else if(string.get(0).toString().contains("0")) {
                 Toast.makeText(getApplicationContext(), "You are a normal user", Toast.LENGTH_SHORT).show();
                 Intent intent1=new Intent(getApplicationContext(),Public_select.class);
                 startActivity(intent1);
@@ -110,7 +116,7 @@ public class Admin_check extends AppCompatActivity {
             else{
                 Toast.makeText(getApplicationContext(),"You are an admin",Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(getApplicationContext(),Admin_Activity.class);
-                intent.putExtra("email",string);
+                intent.putExtra("list",string);
                 startActivity(intent);
             }
             //pd.dismiss();

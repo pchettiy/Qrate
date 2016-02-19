@@ -19,5 +19,16 @@
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner2" />
+        android:id="@+id/spinner2"
+        android:layout_marginTop="3dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check"
+        android:id="@+id/button4"
+        android:layout_gravity="center_horizontal"
+        android:onClick="check" />
+
+
 </LinearLayout>

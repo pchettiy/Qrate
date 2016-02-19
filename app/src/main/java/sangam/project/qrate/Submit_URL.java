@@ -8,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -29,14 +32,33 @@ public class Submit_URL extends AppCompatActivity {
     Context context;
     String url_to;
     EditText edturl;
+    Spinner spinner;
+    String selected_track;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit__url);
-
+        ArrayList<String> tracks=new ArrayList<>();
+        tracks.add("WedDev");
+        tracks.add("Appdev");
+        tracks.add("Python");
         edturl= (EditText) findViewById(R.id.url_edit);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context=this.getApplicationContext();
+        spinner= (Spinner) findViewById(R.id.spinner_track);
+        ArrayAdapter<String> dataAdapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item,tracks);
+        spinner.setAdapter(dataAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selected_track=parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
     public void submit(View v){
@@ -51,7 +73,7 @@ public class Submit_URL extends AppCompatActivity {
                 // start time consuming background process here
             }
         }, 1000);*/
-        new Asyncsubmit().execute(url_to);
+        new Asyncsubmit().execute(url_to,selected_track);
 
     }
 
@@ -76,7 +98,7 @@ public class Submit_URL extends AppCompatActivity {
                 URL url=new URL(downloadurl);
                 try{
                     HttpURLConnection urlConnection= (HttpURLConnection) url.openConnection();
-                    String postParameters="url="+params[0];
+                    String postParameters="url="+params[0]+"&track="+params[1];
                     Log.d("URL",params[0]);
                     urlConnection.setRequestMethod("POST");
                     urlConnection.setRequestProperty("Content-Type",

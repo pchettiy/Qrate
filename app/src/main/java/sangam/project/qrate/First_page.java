@@ -1,5 +1,6 @@
 package sangam.project.qrate;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +11,7 @@ public class First_page extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_page);
+        setContentView(R.layout.first_page);
     }
     public void admin_check(View v){
         Intent intent=new Intent(getApplicationContext(),Admin_check.class);

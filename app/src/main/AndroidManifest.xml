@@ -26,14 +26,19 @@
             android:name=".Submit_URL"
             android:parentActivityName=".ViewTopics" />
         <activity android:name=".Admin_Activity" />
-        <activity android:name=".First_page" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".First_page">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".Admin_check"></activity>
+        <activity android:name=".Admin_check" />
+        <activity
+            android:name=".Admin_check_topics"
+            android:label="@string/title_activity_admin_check_topics"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Admin_Allocation"></activity>
     </application>
 
 </manifest>
