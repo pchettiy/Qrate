@@ -46,6 +46,7 @@ public class Admin_check_topics extends AppCompatActivity {
         if(intent!=null){
             track=intent.getStringExtra("topic");
         }
+        admintopicslist=new ArrayList<AdminTopic>();
         pd = ProgressDialog.show(this,"Loading","",false,false);
         new AsyncGetTitleAndUrl().execute(track);
         setContentView(R.layout.activity_admin_check_topics);
@@ -67,8 +68,9 @@ public class Admin_check_topics extends AppCompatActivity {
     public class AsyncGetTitleAndUrl extends AsyncTask<String,Void,String> {
         @Override
         protected String doInBackground(String... strings) {
-            String result = null;
-            String downloadurl="https://spider.nitt.edu/~praba1110/qrate/storeapproved.php";
+            String result = "";
+            ArrayList<AdminTopic> admintopics;
+            String downloadurl="https://spider.nitt.edu/~praba1110/qrate/timeline.php";
             try{
 
                 URL url=new URL(downloadurl);
@@ -115,8 +117,10 @@ public class Admin_check_topics extends AppCompatActivity {
                     adminTopic.url = object.getString("url");
                     admintopicslist.add(adminTopic);
                 }
+                pd.dismiss();
             AdminAdapter adminAdapter = new AdminAdapter(Admin_check_topics.this,admintopicslist);
             listView.setAdapter(adminAdapter);
+
             }catch(JSONException e) {
                 e.printStackTrace();
             }

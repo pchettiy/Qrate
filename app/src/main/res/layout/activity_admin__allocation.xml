@@ -11,6 +11,13 @@
     tools:context="sangam.project.qrate.Admin_Allocation">
 
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check the site"
+        android:id="@+id/button6"
+        android:layout_gravity="center_horizontal"
+        android:onClick="checkthesite" />
 
     <LinearLayout
         android:orientation="horizontal"

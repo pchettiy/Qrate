@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +33,16 @@ public class Topic_Adapter extends ArrayAdapter {
         View v=inflater.inflate(R.layout.cardview,parent,false);
         TextView title= (TextView) v.findViewById(R.id.info_text);
         TextView mins= (TextView) v.findViewById(R.id.textView2);
+        TextView rating= (TextView) v.findViewById(R.id.textView8);
         RelativeLayout cardlayout= (RelativeLayout) v.findViewById(R.id.card_layout);
         cardlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String url=topics.get(position).url;
+                String http="http://";
+                if(!url.startsWith("htt"))
+                    url=http+url;
+                Log.d("NEWURL",url);
                 Intent i=new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 context.startActivity(i);
@@ -44,7 +50,8 @@ public class Topic_Adapter extends ArrayAdapter {
         });
 
         title.setText(topics.get(position).title);
-        mins.setText(topics.get(position).title);
+        mins.setText("Approx mins: "+topics.get(position).mins);
+        rating.setText(topics.get(position).rating);
 
         return v;
     }

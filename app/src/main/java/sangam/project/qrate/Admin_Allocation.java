@@ -1,6 +1,8 @@
 package sangam.project.qrate;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +49,14 @@ public class Admin_Allocation extends AppCompatActivity {
         setContentView(R.layout.activity_admin__allocation);
         levelList = new ArrayList<>(Arrays.asList("Beginner","Intermediate","Advanced"));
         resourceKindList = new ArrayList<>(Arrays.asList("Video","Course","WebTutorial"));
+        /*levelList=new ArrayList<>();
+        levelList.add("Beginner");
+        levelList.add("Intermediate");
+        levelList.add("Advanced");
+        resourceKindList=new ArrayList<>();
+        resourceKindList.add("WebTutorial");
+        resourceKindList.add("Course");
+        resourceKindList.add("Video");*/
         spinnerLevel = (Spinner)findViewById(R.id.spinner3);
         spinnerResouceKind = (Spinner)findViewById(R.id.spinner4);
         editTextDuration = (EditText)findViewById(R.id.editText2);
@@ -55,22 +65,42 @@ public class Admin_Allocation extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         track = bundle.getString("track");
         url = bundle.getString("url");
-        ArrayAdapter adapterLevel = new ArrayAdapter(this,R.layout.support_simple_spinner_dropdown_item,levelList);
-        ArrayAdapter adapterResourceList = new ArrayAdapter(this,R.layout.support_simple_spinner_dropdown_item,resourceKindList);
+        ArrayAdapter<String> adapterLevel = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,levelList);
+        ArrayAdapter adapterResourceList = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,resourceKindList);
         spinnerLevel.setAdapter(adapterLevel);
         spinnerResouceKind.setAdapter(adapterResourceList);
-        spinnerLevel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        spinnerLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                level = levelList.get(i);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                level=parent.getItemAtPosition(position).toString();
+                Log.d("level",level);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        }) ;
+        spinnerResouceKind.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                resourceKind=parent.getItemAtPosition(position).toString();
+                Log.d("resourcekind",resourceKind);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
-        spinnerResouceKind.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*spinnerResouceKind.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 resourceKind = levelList.get(i);
             }
-        });
+        });*/
+
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
@@ -80,6 +110,10 @@ public class Admin_Allocation extends AppCompatActivity {
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+
+                Log.d("rating",rating);
                 if(level.equals("")||resourceKind.equals("")||rating.equals(""))
                     Toast.makeText(Admin_Allocation.this,"Please select Properly",Toast.LENGTH_SHORT).show();
                 else {
@@ -88,6 +122,15 @@ public class Admin_Allocation extends AppCompatActivity {
                 }
             }
         });
+    }
+    public void checkthesite(View v){
+        String http="http://";
+        if(!url.startsWith("htt"))
+            url=http+url;
+        Log.d("NEWURL",url);
+        Intent i=new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 
     public class AsyncSendAllocationTask extends AsyncTask<String,Void,String>
@@ -103,9 +146,9 @@ public class Admin_Allocation extends AppCompatActivity {
             String downloadurl="https://spider.nitt.edu/~praba1110/qrate/storeapproved.php";
             try{
 
-                URL url=new URL(downloadurl);
+                URL urld=new URL(downloadurl);
                 try{
-                    HttpURLConnection urlConnection= (HttpURLConnection) url.openConnection();
+                    HttpURLConnection urlConnection= (HttpURLConnection) urld.openConnection();
                     String postParameters="track="+track.toLowerCase()+"&kind="+resourceKind.toLowerCase()
                                     +"&min="+strings[0].toLowerCase()+"&url="+url+"&level="+level.toLowerCase()
                                     +"&rating="+rating.toLowerCase();
@@ -124,6 +167,7 @@ public class Admin_Allocation extends AppCompatActivity {
                     while((line=bufferedReader.readLine())!=null){
                         result+=line;
                     }
+                    if(result!=null)
                     Log.d("DATA",result);
                     inputStream.close();
 
